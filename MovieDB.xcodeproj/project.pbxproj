@@ -148,6 +148,9 @@
 			children = (
 				764B13FB29AA689C00A349FA /* AppDelegate.swift */,
 				764B13FD29AA689C00A349FA /* SceneDelegate.swift */,
+				7683894829AB82A600D308CA /* Helper */,
+				7683894629AB829000D308CA /* Model */,
+				7683894729AB829F00D308CA /* Service */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -155,6 +158,8 @@
 		764B142C29AA81C900A349FA /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				7683894A29AB82DC00D308CA /* MovieDetail */,
+				7683894929AB82D600D308CA /* MovieList */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -166,6 +171,41 @@
 				764B140629AA689D00A349FA /* LaunchScreen.storyboard */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		7683894629AB829000D308CA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7683894729AB829F00D308CA /* Service */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		7683894829AB82A600D308CA /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		7683894929AB82D600D308CA /* MovieList */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MovieList;
+			sourceTree = "<group>";
+		};
+		7683894A29AB82DC00D308CA /* MovieDetail */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MovieDetail;
 			sourceTree = "<group>";
 		};
 		DF138EC09E69B87A11199A13 /* Frameworks */ = {
@@ -188,7 +228,6 @@
 				841E01167DE51ABD28D09C0D /* Pods-MovieDBTests.debug.xcconfig */,
 				8F57EB1DCB358CACA17AE619 /* Pods-MovieDBTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
