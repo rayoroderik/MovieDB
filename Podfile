@@ -8,6 +8,8 @@ target 'MovieDB' do
   # Pods for MovieDB
   pod 'Moya'
   pod 'Kingfisher'
+  pod 'SnapKit'
+  pod 'youtube-ios-player-helper'
 
   target 'MovieDBTests' do
     inherit! :search_paths

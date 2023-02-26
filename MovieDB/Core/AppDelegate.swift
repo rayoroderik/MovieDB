@@ -10,10 +10,21 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        guard let appWindow = window else {
+            fatalError("failed to create window")
+        }
+        
+        let viewController = MovieListViewController()
+        let navigationController = UINavigationController(rootViewController: viewController)
+        appWindow.rootViewController = navigationController
+        appWindow.makeKeyAndVisible()
+        
         return true
     }
 
