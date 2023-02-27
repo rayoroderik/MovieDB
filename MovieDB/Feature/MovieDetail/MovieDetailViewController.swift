@@ -5,6 +5,7 @@
 //  Created by Rayo on 26/02/23.
 //
 
+import SkeletonView
 import UIKit
 import youtube_ios_player_helper
 
@@ -44,11 +45,13 @@ class MovieDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getMovieDetail()
         setupView()
+        setupSkeleton()
+        startSkeleton()
         setupErrorView()
         setupConstraint()
         setupCallback()
+        viewModel.getMovieDetail()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -251,6 +254,7 @@ class MovieDetailViewController: UIViewController {
     }
     
     func updateView() {
+        stopSkeleton()
         guard let movie = viewModel.getMovie(),
               let imageURL = movie.posterPath,
               let movieTitle = movie.title,
@@ -272,6 +276,35 @@ class MovieDetailViewController: UIViewController {
         
         reviewErrorView.isHidden = !(viewModel.getReviews() ?? []).isEmpty
         trailerErrorView.isHidden = !(viewModel.getVideoID() ?? "").isEmpty
+    }
+    
+    func setupSkeleton() {
+        imageView.isSkeletonable = true
+        titleLabel.isSkeletonable = true
+        synopsisLabel.isSkeletonable = true
+        reviewCollectionView.isSkeletonable = true
+        youtubePlayer.isSkeletonable = true
+    }
+    
+    func startSkeleton() {
+        imageView.showAnimatedGradientSkeleton()
+        titleLabel.showAnimatedGradientSkeleton()
+        synopsisLabel.showAnimatedGradientSkeleton()
+        reviewCollectionView.showAnimatedGradientSkeleton()
+        youtubePlayer.showAnimatedGradientSkeleton()
+    }
+    
+    func stopSkeleton() {
+        imageView.stopSkeletonAnimation()
+        imageView.hideSkeleton()
+        titleLabel.stopSkeletonAnimation()
+        titleLabel.hideSkeleton()
+        synopsisLabel.stopSkeletonAnimation()
+        synopsisLabel.hideSkeleton()
+        reviewCollectionView.stopSkeletonAnimation()
+        reviewCollectionView.hideSkeleton()
+        youtubePlayer.stopSkeletonAnimation()
+        youtubePlayer.hideSkeleton()
     }
 }
 
