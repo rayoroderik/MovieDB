@@ -43,7 +43,6 @@ extension MovieProvider: TargetType {
     }
     
     var task: Task {
-        
         switch self {
         case let .getMovieList(page):
             let parameters: [String: Any] = ["api_key": apiKey,

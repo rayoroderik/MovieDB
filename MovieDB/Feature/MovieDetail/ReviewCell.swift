@@ -39,10 +39,6 @@ class ReviewCell: UICollectionViewCell {
         layoutIfNeeded()
     }
 
-    public override func prepareForReuse() {
-        super.prepareForReuse()
-    }
-
     func setupView() {
         
         containerView.backgroundColor = .systemBackground

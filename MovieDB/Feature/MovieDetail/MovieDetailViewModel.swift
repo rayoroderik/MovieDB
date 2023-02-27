@@ -53,10 +53,8 @@ class MovieDetailViewModel {
                 guard let self = self else { return }
                 self.reviews = reviews.results ?? []
                 self.getMovieVideos()
-            case .failure(let error):
+            case .failure:
                 guard let self = self else { return }
-                print(error)
-                print(error.localizedDescription)
                 self.getMovieVideos()
             }
         }
@@ -79,10 +77,8 @@ class MovieDetailViewModel {
                 self.videos = videos.results ?? []
                 self.didGetData?()
                 self.updateErrorView?()
-            case .failure(let error):
+            case .failure:
                 guard let self = self else { return }
-                print(error)
-                print(error.localizedDescription)
                 self.didGetData?()
                 self.updateErrorView?()
             }
