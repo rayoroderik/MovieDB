@@ -5,8 +5,9 @@
 //  Created by Rayo on 27/02/23.
 //
 
-import UIKit
+import SkeletonView
 import SnapKit
+import UIKit
 
 class ReviewCell: UICollectionViewCell {
     // View
@@ -36,6 +37,7 @@ class ReviewCell: UICollectionViewCell {
         containerView.addSubview(reviewLabel)
 
         setupConstraints()
+        setupSkeleton()
         layoutIfNeeded()
     }
 
@@ -90,6 +92,16 @@ class ReviewCell: UICollectionViewCell {
             make.trailing.equalTo(containerView).offset(-16)
             make.bottom.equalTo(containerView).offset(-16)
         }
+    }
+    
+    func setupSkeleton() {
+        self.isSkeletonable = true
+        contentView.isSkeletonable = true
+        containerView.isSkeletonable = true
+        authorAvatar.isSkeletonable = true
+        authorNameLabel.isSkeletonable = true
+        scoreLabel.isSkeletonable = true
+        reviewLabel.isSkeletonable = true
     }
 
     func populate(avatarURL: String?, authorName: String, score: String, review: String) {

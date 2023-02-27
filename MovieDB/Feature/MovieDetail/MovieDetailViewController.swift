@@ -46,10 +46,10 @@ class MovieDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setupConstraint()
         setupSkeleton()
         startSkeleton()
         setupErrorView()
-        setupConstraint()
         setupCallback()
         viewModel.getMovieDetail()
     }
@@ -62,7 +62,7 @@ class MovieDetailViewController: UIViewController {
         title = "Movie Detail"
         view.backgroundColor = .systemBackground
         
-        reviewCollectionView.register(ReviewCell.self, forCellWithReuseIdentifier: "Cell")
+        reviewCollectionView.register(ReviewCell.self, forCellWithReuseIdentifier: "ReviewCell")
         reviewCollectionView.delegate = self
         reviewCollectionView.dataSource = self
         
@@ -118,17 +118,20 @@ class MovieDetailViewController: UIViewController {
         trailerErrorView.addSubview(trailerErrorLabel)
         
         errorView.backgroundColor = .systemBackground
+        errorView.isHidden = true
         errorLabel.font = .systemFont(ofSize: 16, weight: .medium)
         errorLabel.textAlignment = .center
         errorLabel.numberOfLines = 0
         
         reviewErrorView.backgroundColor = .systemBackground
+        reviewErrorView.isHidden = true
         reviewErrorLabel.font = .systemFont(ofSize: 16, weight: .medium)
         reviewErrorLabel.textAlignment = .center
         reviewErrorLabel.numberOfLines = 1
         reviewErrorLabel.text = "No Review Found."
         
         trailerErrorView.backgroundColor = .systemBackground
+        trailerErrorView.isHidden = true
         trailerErrorLabel.font = .systemFont(ofSize: 16, weight: .medium)
         trailerErrorLabel.textAlignment = .center
         trailerErrorLabel.numberOfLines = 1
@@ -315,7 +318,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView
-            .dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? ReviewCell else {
+            .dequeueReusableCell(withReuseIdentifier: "ReviewCell", for: indexPath) as? ReviewCell else {
             return UICollectionViewCell()
         }
         
@@ -331,6 +334,22 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
                       authorName: review.author ?? "",
                       score: scoreString,
                       review: review.content ?? "")
+        return cell
+    }
+}
+
+extension MovieDetailViewController: SkeletonCollectionViewDataSource {
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
+        return "ReviewCell"
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        3
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, skeletonCellForItemAt indexPath: IndexPath) -> UICollectionViewCell? {
+        let cell = skeletonView.dequeueReusableCell(withReuseIdentifier: "ReviewCell", for: indexPath) as? ReviewCell
+        
         return cell
     }
 }

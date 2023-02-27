@@ -5,8 +5,9 @@
 //  Created by Rayo on 26/02/23.
 //
 
-import UIKit
+import SkeletonView
 import SnapKit
+import UIKit
 
 class MovieListCell: UICollectionViewCell {
     // View
@@ -32,6 +33,7 @@ class MovieListCell: UICollectionViewCell {
         containerView.addSubview(movieTitleLabel)
 
         setupConstraints()
+        setupSkeleton()
         layoutIfNeeded()
     }
 
@@ -64,6 +66,14 @@ class MovieListCell: UICollectionViewCell {
             make.bottom.equalTo(containerView).offset(-16)
             
         }
+    }
+    
+    func setupSkeleton() {
+        self.isSkeletonable = true
+        contentView.isSkeletonable = true
+        containerView.isSkeletonable = true
+        movieImageView.isSkeletonable = true
+        movieTitleLabel.isSkeletonable = true
     }
 
     func populate(imageURL: String?, title: String) {

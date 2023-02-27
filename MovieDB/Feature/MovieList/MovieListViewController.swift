@@ -6,8 +6,9 @@
 //
 
 import Kingfisher
-import UIKit
+import SkeletonView
 import SnapKit
+import UIKit
 
 class MovieListViewController: UIViewController {
     
@@ -30,12 +31,13 @@ class MovieListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getMovieList()
-        view.backgroundColor = .systemBackground
         setupView()
         setupErrorView()
         setupConstraint()
+        setupSkeleton()
+        startSkeleton()
         setupCallback()
+        viewModel.getMovieList()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,8 +50,9 @@ class MovieListViewController: UIViewController {
     
     func setupView() {
         title = "Movie List"
+        view.backgroundColor = .systemBackground
         
-        collectionView.register(MovieListCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(MovieListCell.self, forCellWithReuseIdentifier: "MovieListCell")
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -63,6 +66,7 @@ class MovieListViewController: UIViewController {
         view.addSubview(errorView)
         errorView.addSubview(errorLabel)
         errorView.backgroundColor = .systemBackground
+        errorView.isHidden = true
         errorLabel.font = .systemFont(ofSize: 16, weight: .medium)
         errorLabel.textAlignment = .center
         errorLabel.numberOfLines = 0
@@ -92,15 +96,31 @@ class MovieListViewController: UIViewController {
     
     func setupCallback() {
         viewModel.didGetData = { [weak self] in
-            self?.collectionView.reloadData()
-            self?.refreshControl.endRefreshing()
+            guard let self = self else { return }
+            self.stopSkeleton()
+            self.collectionView.reloadData()
+            self.refreshControl.endRefreshing()
         }
 
         viewModel.updateErrorView = { [weak self] in
             guard let self = self else { return }
+            self.stopSkeleton()
             let isHidden = self.viewModel.getErrorMessage().isEmpty
             self.toggleErrorView(isHidden: isHidden)
         }
+    }
+    
+    func setupSkeleton() {
+        collectionView.isSkeletonable = true
+    }
+    
+    func startSkeleton() {
+        collectionView.showAnimatedGradientSkeleton()
+    }
+    
+    func stopSkeleton() {
+        collectionView.stopSkeletonAnimation()
+        collectionView.hideSkeleton()
     }
     
     @objc private func didPullToRefresh(_ sender: Any) {
@@ -120,7 +140,7 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView
-            .dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? MovieListCell else {
+            .dequeueReusableCell(withReuseIdentifier: "MovieListCell", for: indexPath) as? MovieListCell else {
             return UICollectionViewCell()
         }
         
@@ -132,7 +152,6 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         guard let movies = viewModel.getMoviesData() else { return }
         let movie = movies[indexPath.row]
         guard let movieID = movie.id else { return }
@@ -146,5 +165,21 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
         if indexPath.row == viewModel.getListCount() - 5 {
             viewModel.loadNextPage()
         }
+    }
+}
+
+extension MovieListViewController: SkeletonCollectionViewDataSource {
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
+        return "MovieListCell"
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        6
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, skeletonCellForItemAt indexPath: IndexPath) -> UICollectionViewCell? {
+        let cell = skeletonView.dequeueReusableCell(withReuseIdentifier: "MovieListCell", for: indexPath) as? MovieListCell
+        
+        return cell
     }
 }

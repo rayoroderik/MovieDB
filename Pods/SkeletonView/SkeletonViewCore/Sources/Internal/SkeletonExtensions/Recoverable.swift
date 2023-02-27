@@ -47,14 +47,14 @@ extension UIView: Recoverable {
 
 extension UILabel {
     
-    var labelState: RecoverableLabelState? {
-        get { return ao_get(pkey: &ViewAssociatedKeys.labelViewState) as? RecoverableLabelState }
+    var labelState: RecoverableTextViewState? {
+        get { return ao_get(pkey: &ViewAssociatedKeys.labelViewState) as? RecoverableTextViewState }
         set { ao_setOptional(newValue, pkey: &ViewAssociatedKeys.labelViewState) }
     }
     
     override func saveViewState() {
         super.saveViewState()
-        labelState = RecoverableLabelState(view: self)
+        labelState = RecoverableTextViewState(view: self)
     }
     
     override func recoverViewState(forced: Bool) {
@@ -70,11 +70,6 @@ extension UILabel {
             
             if self.textColor == .clear || forced {
                 self.textColor = storedLabelState.textColor
-                if let attributedText = storedLabelState.attributedText {
-                    self.attributedText = attributedText
-                } else {
-                    self.text = storedLabelState.text
-                }
             }
         }
     }
@@ -100,9 +95,6 @@ extension UITextView {
             
             if self?.textColor == .clear || forced {
                 self?.textColor = storedLabelState.textColor
-                if let attributedText = storedLabelState.attributedText {
-                    self?.attributedText = attributedText
-                }
             }
         }
     }
@@ -128,9 +120,6 @@ extension UITextField {
 
             if self?.textColor == .clear || forced {
                 self?.textColor = storedLabelState.textColor
-                if let attributedText = storedLabelState.attributedText {
-                    self?.attributedText = attributedText
-                }
             }
 
             if self?.placeholder == nil || forced {

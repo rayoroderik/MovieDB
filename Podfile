@@ -11,7 +11,7 @@ target 'MovieDB' do
   # Pods for MovieDB
   pod 'Moya'
   pod 'Kingfisher'
-  pod 'SkeletonView'
+  pod 'SkeletonView', '1.30.3'
   pod 'SnapKit'
   pod 'youtube-ios-player-helper'
 
