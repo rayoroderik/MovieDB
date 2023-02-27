@@ -10,6 +10,7 @@ import Foundation
 class MovieDetailViewModel {
     
     var didGetData: (() -> Void)?
+    var updateErrorView: (() -> Void)?
     
     var service: MovieService = MovieService()
     
@@ -17,6 +18,8 @@ class MovieDetailViewModel {
     var movie: Movie?
     var reviews: [ReviewResult] = []
     var videos: [VideoResult] = []
+    
+    var errorMessage: String?
     
     func setMovieID(id: Int) {
         movieID = id
@@ -30,10 +33,10 @@ class MovieDetailViewModel {
                 guard let self = self else { return }
                 self.movie = movieDetail
                 self.getMovieReviews()
-            case .failure(let error):
+            case .failure:
                 guard let self = self else { return }
-                print(error)
-                print(error.localizedDescription)
+                self.errorMessage = "Terjadi kesalahan, silahkan coba lagi."
+                self.updateErrorView?()
             }
         }
     }
@@ -75,16 +78,22 @@ class MovieDetailViewModel {
                 guard let self = self else { return }
                 self.videos = videos.results ?? []
                 self.didGetData?()
+                self.updateErrorView?()
             case .failure(let error):
                 guard let self = self else { return }
                 print(error)
                 print(error.localizedDescription)
                 self.didGetData?()
+                self.updateErrorView?()
             }
         }
     }
     
     func getVideoID() -> String? {
         return videos.first?.key
+    }
+    
+    func getErrorMessage() -> String {
+        return errorMessage ?? ""
     }
 }

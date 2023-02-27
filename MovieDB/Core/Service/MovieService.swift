@@ -37,15 +37,17 @@ extension MovieService {
             switch result {
             case let .success(response):
                 do {
-                    let results = try JSONDecoder().decode(T.self, from: response.data)
-                    completion(.success(results))
+                    if response.statusCode == 200 {
+                        let results = try JSONDecoder().decode(T.self, from: response.data)
+                        completion(.success(results))
+                    } else {
+                        completion(.failure(ErrorCase.networkError))
+                    }
                 } catch let error {
                     completion(.failure(error))
                 }
             case let .failure(error):
                 completion(.failure(error))
-                print(error)
-                print(error.localizedDescription)
             }
         }
     }

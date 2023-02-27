@@ -21,6 +21,9 @@ class MovieListViewController: UIViewController {
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
+    let refreshControl: UIRefreshControl = UIRefreshControl()
+    var errorView: UIView = UIView()
+    var errorLabel: UILabel = UILabel()
     
     // View Model
     let viewModel: MovieListViewModel = MovieListViewModel()
@@ -30,6 +33,7 @@ class MovieListViewController: UIViewController {
         viewModel.getMovieList()
         view.backgroundColor = .systemBackground
         setupView()
+        setupErrorView()
         setupConstraint()
         setupCallback()
     }
@@ -50,6 +54,20 @@ class MovieListViewController: UIViewController {
         collectionView.dataSource = self
         
         view.addSubview(collectionView)
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        collectionView.alwaysBounceVertical = true
+        collectionView.refreshControl = refreshControl // iOS 10+
+    }
+    
+    func setupErrorView() {
+        view.addSubview(errorView)
+        errorView.addSubview(errorLabel)
+        errorView.backgroundColor = .systemBackground
+        errorLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        errorLabel.textAlignment = .center
+        errorLabel.numberOfLines = 0
+        
+        setupErrorConstraint()
     }
     
     func setupConstraint() {
@@ -60,17 +78,38 @@ class MovieListViewController: UIViewController {
         }
     }
     
+    func setupErrorConstraint() {
+        errorView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        errorLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
+    }
+    
     func setupCallback() {
         viewModel.didGetData = { [weak self] in
-                self?.collectionView.reloadData()
-
+            self?.collectionView.reloadData()
+            self?.refreshControl.endRefreshing()
         }
 
-//        viewModel.updateErrorView = { [weak self] in
-//            guard let self = self else { return }
-//            let isHidden = self.viewModel.getErrorMessage().isEmpty
-//            self.toggleErrorView(isHidden: isHidden)
-//        }
+        viewModel.updateErrorView = { [weak self] in
+            guard let self = self else { return }
+            let isHidden = self.viewModel.getErrorMessage().isEmpty
+            self.toggleErrorView(isHidden: isHidden)
+        }
+    }
+    
+    @objc private func didPullToRefresh(_ sender: Any) {
+        viewModel.refresh()
+    }
+    
+    func toggleErrorView(isHidden: Bool) {
+        errorView.isHidden = isHidden
+        errorLabel.text = viewModel.getErrorMessage()
     }
 }
 

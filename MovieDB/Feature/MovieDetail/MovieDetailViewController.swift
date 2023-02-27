@@ -17,6 +17,9 @@ class MovieDetailViewController: UIViewController {
     var titleLabel: UILabel = UILabel()
     var synopsisTitleLabel: UILabel = UILabel()
     var synopsisLabel: UILabel = UILabel()
+    var errorView: UIView = UIView()
+    var errorLabel: UILabel = UILabel()
+    
     var reviewTitleLabel: UILabel = UILabel()
     var reviewCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -28,8 +31,13 @@ class MovieDetailViewController: UIViewController {
         collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
+    var reviewErrorView: UIView = UIView()
+    var reviewErrorLabel: UILabel = UILabel()
+    
     var trailerTitleLabel: UILabel = UILabel()
     var youtubePlayer: YTPlayerView = YTPlayerView()
+    var trailerErrorView: UIView = UIView()
+    var trailerErrorLabel: UILabel = UILabel()
     
     // View Model
     let viewModel: MovieDetailViewModel = MovieDetailViewModel()
@@ -38,6 +46,7 @@ class MovieDetailViewController: UIViewController {
         super.viewDidLoad()
         viewModel.getMovieDetail()
         setupView()
+        setupErrorView()
         setupConstraint()
         setupCallback()
     }
@@ -95,8 +104,37 @@ class MovieDetailViewController: UIViewController {
         youtubePlayer.delegate = self
     }
     
-    func setupConstraint() {
+    func setupErrorView() {
+        view.addSubview(errorView)
+        errorView.addSubview(errorLabel)
         
+        contentView.addSubview(reviewErrorView)
+        reviewErrorView.addSubview(reviewErrorLabel)
+        
+        contentView.addSubview(trailerErrorView)
+        trailerErrorView.addSubview(trailerErrorLabel)
+        
+        errorView.backgroundColor = .systemBackground
+        errorLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        errorLabel.textAlignment = .center
+        errorLabel.numberOfLines = 0
+        
+        reviewErrorView.backgroundColor = .systemBackground
+        reviewErrorLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        reviewErrorLabel.textAlignment = .center
+        reviewErrorLabel.numberOfLines = 1
+        reviewErrorLabel.text = "No Review Found."
+        
+        trailerErrorView.backgroundColor = .systemBackground
+        trailerErrorLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        trailerErrorLabel.textAlignment = .center
+        trailerErrorLabel.numberOfLines = 1
+        trailerErrorLabel.text = "No Trailer Found."
+        
+        setupErrorConstraint()
+    }
+    
+    func setupConstraint() {
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -164,16 +202,48 @@ class MovieDetailViewController: UIViewController {
         }
     }
     
+    func setupErrorConstraint() {
+        errorView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        errorLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
+        
+        reviewErrorView.snp.makeConstraints { make in
+            make.edges.equalTo(reviewCollectionView)
+        }
+        
+        reviewErrorLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
+        
+        trailerErrorView.snp.makeConstraints { make in
+            make.edges.equalTo(youtubePlayer)
+        }
+        
+        trailerErrorLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
+    }
+    
     func setupCallback() {
         viewModel.didGetData = { [weak self] in
             self?.updateView()
         }
 
-//        viewModel.updateErrorView = { [weak self] in
-//            guard let self = self else { return }
-//            let isHidden = self.viewModel.getErrorMessage().isEmpty
-//            self.toggleErrorView(isHidden: isHidden)
-//        }
+        viewModel.updateErrorView = { [weak self] in
+            guard let self = self else { return }
+            let isHidden = self.viewModel.getErrorMessage().isEmpty
+            self.toggleErrorView(isHidden: isHidden)
+        }
     }
     
     func setMovieID(id: Int) {
@@ -194,6 +264,14 @@ class MovieDetailViewController: UIViewController {
         youtubePlayer.load(withVideoId: viewModel.getVideoID() ?? "")
         
         reviewCollectionView.reloadData()
+    }
+    
+    func toggleErrorView(isHidden: Bool) {
+        errorView.isHidden = isHidden
+        errorLabel.text = viewModel.getErrorMessage()
+        
+        reviewErrorView.isHidden = !(viewModel.getReviews() ?? []).isEmpty
+        trailerErrorView.isHidden = !(viewModel.getVideoID() ?? "").isEmpty
     }
 }
 

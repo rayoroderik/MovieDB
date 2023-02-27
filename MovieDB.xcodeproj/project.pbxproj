@@ -248,9 +248,9 @@
 		7683894929AB82D600D308CA /* MovieList */ = {
 			isa = PBXGroup;
 			children = (
+				7683897129ABA7FC00D308CA /* MovieListCell.swift */,
 				7683894B29AB831E00D308CA /* MovieListViewController.swift */,
 				7683894D29AB832600D308CA /* MovieListViewModel.swift */,
-				7683897129ABA7FC00D308CA /* MovieListCell.swift */,
 			);
 			path = MovieList;
 			sourceTree = "<group>";
